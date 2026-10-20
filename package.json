@@ -1,0 +1,20 @@
+{
+  "name": "home-stream",
+  "private": true,
+  "description": "Home streaming system for LG webOS TV",
+  "workspaces": [
+    "server",
+    "tv-app",
+    "desktop"
+  ],
+  "scripts": {
+    "server": "npm run start --workspace server",
+    "server:dev": "npm run dev --workspace server",
+    "desktop": "npm run start --workspace desktop",
+    "desktop:shortcut": "npm run shortcut --workspace desktop",
+    "desktop:dist": "npm run dist --workspace desktop",
+    "tv:dev": "npm run dev --workspace tv-app",
+    "tv:build": "npm run build --workspace tv-app",
+    "test": "npm test --workspace server && npm test --workspace desktop"
+  }
+}

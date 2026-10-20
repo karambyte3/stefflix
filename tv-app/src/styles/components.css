@@ -1,0 +1,302 @@
+/* --- navbar ----------------------------------------------------------------- */
+
+.navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  height: 130px;
+  padding: 30px var(--safe-x) 0;
+  /* Mostly solid, so rows scrolled underneath don't show through the tabs. */
+  background: linear-gradient(var(--bg) 70%, rgba(20, 20, 20, 0));
+}
+
+.navbar-logo {
+  display: block;
+  /* logo.png is rendered at 2x by scripts/generate-icons.js */
+  height: 56px;
+  margin-right: 48px;
+}
+
+.nav-tab {
+  margin-right: 12px;
+  padding: 8px 24px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 32px;
+  font-weight: 600;
+  outline: none;
+  transition: transform 150ms ease-out;
+}
+
+.nav-tab.is-active {
+  color: var(--text);
+  box-shadow: inset 0 -4px 0 var(--accent);
+}
+
+.nav-tab.is-focused {
+  background: var(--text);
+  color: #000;
+  transform: scale(1.08);
+}
+
+/* --- artwork & cards ---------------------------------------------------------- */
+
+.art {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.art-poster {
+  padding-top: 150%;
+}
+
+.art-landscape {
+  padding-top: 56.25%;
+}
+
+.art-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  right: 12px;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.art-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
+.art-img.is-loaded {
+  opacity: 1;
+}
+
+.card {
+  position: relative;
+  flex-shrink: 0;
+  margin-right: 28px;
+  transition: transform 150ms ease-out;
+}
+
+.card:last-child {
+  margin-right: 0;
+}
+
+.card.is-focused {
+  transform: scale(1.08);
+}
+
+/* A solid ring (no blur) is cheap to draw on the TV. */
+.card.is-focused .art {
+  box-shadow: 0 0 0 4px var(--focus);
+}
+
+.card-caption {
+  margin-top: 12px;
+}
+
+.card-line1,
+.card-line2 {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.card-line1 {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.card-line2 {
+  color: var(--text-muted);
+  font-size: 22px;
+}
+
+.card:not(.is-focused) .card-line1 {
+  color: #ddd;
+}
+
+/* --- modals ------------------------------------------------------------------- */
+
+.modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.modal-center {
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-right {
+  justify-content: flex-end;
+}
+
+.dialog {
+  min-width: 800px;
+  padding: 56px 64px;
+  border-radius: 12px;
+  background: var(--surface);
+  text-align: center;
+}
+
+.dialog-title {
+  margin: 0;
+  font-size: 48px;
+}
+
+.dialog .button-row {
+  justify-content: center;
+}
+
+.dialog .btn {
+  margin: 0 16px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  width: 640px;
+  height: 100%;
+  padding: var(--safe-y) 48px;
+  background: var(--surface);
+}
+
+.menu-title {
+  margin: 0 0 24px;
+  font-size: 40px;
+}
+
+.menu-viewport {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.menu-list {
+  position: relative;
+  padding: 4px 0;
+  transition: transform 200ms ease-out;
+}
+
+.menu-option {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 16px 28px;
+  border: 0;
+  border-left: 6px solid transparent;
+  border-radius: 8px;
+  background: none;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 32px;
+  text-align: left;
+  outline: none;
+}
+
+.menu-option-detail {
+  display: block;
+  margin-top: 4px;
+  overflow: hidden;
+  font-size: 24px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  opacity: 0.75;
+}
+
+.menu-option.is-selected {
+  border-left-color: var(--accent);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.menu-option.is-focused {
+  background: var(--text);
+  color: #000;
+}
+
+/* --- watch progress on artwork ------------------------------------------------------ */
+
+/* Like a YouTube thumbnail: a red bar along the bottom edge and the length in the corner. */
+.progress-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.progress-bar-fill {
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: 0 0;
+}
+
+.duration-badge {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.progress-bar + .duration-badge {
+  bottom: 18px;
+}
+
+/* A tick drawn with borders, so it doesn't depend on the TV's fonts. */
+.watched-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.watched-badge::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 13px;
+  width: 8px;
+  height: 15px;
+  border: solid #fff;
+  border-width: 0 4px 4px 0;
+  transform: rotate(45deg);
+}

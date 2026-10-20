@@ -1,0 +1,309 @@
+/*
+ * Laid out for a fixed 1920x1080 stage with ~5% TV-safe margins.
+ * Chromium 53 constraints: no CSS grid, no flex "gap", no position: sticky.
+ * Animate only transform / opacity.
+ */
+
+:root {
+  --bg: #141414;
+  --surface: #1f1f1f;
+  --surface-2: #2a2a2a;
+  --text: #ffffff;
+  --text-muted: #b3b3b3;
+  --accent: #e50914;
+  --ok: #46d369;
+  --error: #ff6b6b;
+  --warning: #ffb020;
+  --focus: #ffffff;
+  --safe-x: 96px;
+  --safe-y: 54px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  color: var(--text);
+  font-family: 'LG Smart UI', 'Segoe UI', Roboto, Arial, sans-serif;
+  font-size: 32px;
+  line-height: 1.35;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+#app {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: var(--bg);
+  transform-origin: 0 0;
+}
+
+#screens,
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* Transform-scrolled pages (see focus.js). The viewport clips, the page moves. */
+.page-viewport {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.page {
+  position: relative;
+  transition: transform 300ms ease-out;
+}
+
+.no-transition {
+  transition: none !important;
+}
+
+.page-title {
+  margin: 0 0 40px;
+  font-size: 64px;
+  font-weight: 700;
+}
+
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.message-box {
+  position: absolute;
+  top: 50%;
+  left: var(--safe-x);
+  right: var(--safe-x);
+  transform: translateY(-50%);
+}
+
+.message-text {
+  max-width: 1400px;
+  margin: 0;
+  font-size: 44px;
+}
+
+/* --- buttons & focus ------------------------------------------------------ */
+
+.btn {
+  display: inline-block;
+  min-width: 220px;
+  margin-right: 24px;
+  padding: 18px 40px;
+  border: 4px solid transparent;
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 34px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  transition: transform 150ms ease-out;
+}
+
+.btn-primary {
+  background: var(--accent);
+}
+
+.btn-small {
+  min-width: 0;
+  padding: 10px 28px;
+  font-size: 28px;
+}
+
+.btn.is-focused {
+  transform: scale(1.08);
+  border-color: var(--focus);
+}
+
+.button-row {
+  display: flex;
+  align-items: center;
+  margin-top: 40px;
+}
+
+/* --- settings --------------------------------------------------------------- */
+
+/* Everything on one screen: the settings page doesn't scroll. */
+.settings {
+  padding: 32px var(--safe-x) 0;
+}
+
+.settings .page-title {
+  margin-bottom: 24px;
+  font-size: 56px;
+}
+
+/* Two columns, so later settings (subtitles) still fit on one screen. */
+.settings-columns {
+  display: flex;
+  align-items: flex-start;
+}
+
+.settings-column {
+  width: 840px;
+  margin-right: 48px;
+}
+
+.settings-column:last-child {
+  margin-right: 0;
+}
+
+.panel {
+  margin-bottom: 24px;
+  padding: 28px 40px;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.panel-title {
+  margin: 0 0 16px;
+  font-size: 32px;
+}
+
+.panel .button-row {
+  margin-top: 24px;
+}
+
+.panel .library-cleanup {
+  margin-top: 16px;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 16px;
+  color: var(--text-muted);
+}
+
+.text-input {
+  display: block;
+  width: 100%;
+  padding: 16px 20px;
+  border: 4px solid var(--surface-2);
+  border-radius: 8px;
+  background: #000;
+  color: var(--text);
+  font: inherit;
+  font-size: 36px;
+  outline: none;
+}
+
+.text-input.is-focused {
+  border-color: var(--focus);
+}
+
+.text-input:focus {
+  border-color: var(--accent);
+}
+
+.hint {
+  margin: 10px 0 0;
+  color: var(--text-muted);
+  font-size: 26px;
+}
+
+.status {
+  margin: 16px 0 0;
+  font-size: 26px;
+}
+
+.status:empty {
+  display: none;
+}
+
+.status-ok {
+  color: var(--ok);
+}
+
+.status-error {
+  color: var(--error);
+}
+
+.attribution {
+  margin: 16px 0 0;
+  color: var(--text-muted);
+  font-size: 22px;
+}
+
+/* --- subtitle settings ------------------------------------------------------- */
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 12px 24px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 28px;
+  text-align: left;
+  outline: none;
+}
+
+.setting-value {
+  color: var(--text-muted);
+}
+
+.setting-row.is-focused {
+  background: var(--text);
+  color: #000;
+}
+
+.setting-row.is-focused .setting-value {
+  color: #444;
+}
+
+/* A scaled-down 1920x1080 "screen", so the preview matches the player exactly. */
+.subtitle-preview {
+  position: relative;
+  width: 538px;
+  height: 302px;
+  margin-top: 24px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: linear-gradient(160deg, #3b5d7a 0%, #6e8b5a 55%, #2c3a24 100%);
+}
+
+.subtitle-preview-stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  transform: scale(0.28);
+  transform-origin: 0 0;
+}

@@ -1,0 +1,14 @@
+{
+  "id": "com.stefan.homestream",
+  "version": "0.1.0",
+  "vendor": "Stefan",
+  "type": "web",
+  "main": "index.html",
+  "title": "Stefflix",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "bgColor": "#141414",
+  "resolution": "1920x1080",
+  "disableBackHistoryAPI": true,
+  "requiredACG": []
+}

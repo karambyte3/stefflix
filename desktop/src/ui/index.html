@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="bg">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' http://127.0.0.1:* https://image.tmdb.org"
+    />
+    <title>Stefflix</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <img class="logo" src="../../assets/logo.png" alt="Stefflix" />
+      <nav class="tabs">
+        <button type="button" class="tab-button" data-tab="status" data-i18n="tabs.status"></button>
+        <button type="button" class="tab-button" data-tab="library" data-i18n="tabs.library"></button>
+        <button type="button" class="tab-button" data-tab="import" data-i18n="tabs.import"></button>
+        <button type="button" class="tab-button" data-tab="settings" data-i18n="tabs.settings"></button>
+      </nav>
+      <span id="status" class="status"><span class="dot"></span><span id="status-text"></span></span>
+    </header>
+
+    <!-- Status -->
+    <main id="tab-status" class="tab">
+      <section class="card">
+        <h2 data-i18n="window.tvAddressTitle"></h2>
+        <div class="address-row">
+          <span id="tv-address" class="address"></span>
+          <button id="copy" type="button" data-i18n="window.copy"></button>
+        </div>
+        <p class="hint" data-i18n="window.tvAddressHint"></p>
+        <p id="other-addresses" class="hint"></p>
+      </section>
+
+      <p id="alert" class="alert" hidden></p>
+      <div id="no-folders" class="notice" hidden>
+        <span data-i18n="window.noFolders"></span>
+        <button id="go-to-settings" type="button" class="primary" data-i18n="window.goToSettings"></button>
+      </div>
+
+      <section class="card">
+        <h2 data-i18n="window.actionsTitle"></h2>
+        <div class="actions">
+          <button id="scan" type="button" class="primary" data-i18n="window.scan"></button>
+          <button id="restart" type="button" data-i18n="window.restart"></button>
+          <button id="open-data-dir" type="button" data-i18n="window.openDataDir"></button>
+          <button id="open-log-file" type="button" data-i18n="window.openLogFile"></button>
+        </div>
+        <label class="checkbox">
+          <input id="autostart" type="checkbox" />
+          <span data-i18n="window.autostart"></span>
+        </label>
+      </section>
+
+      <section class="card log-card">
+        <h2 data-i18n="window.logTitle"></h2>
+        <pre id="log" class="log"></pre>
+      </section>
+
+      <p class="hint footer" data-i18n="window.closeHint"></p>
+    </main>
+
+    <!-- Library -->
+    <main id="tab-library" class="tab" hidden>
+      <p id="library-offline" class="notice" data-i18n="library.offline" hidden></p>
+      <div id="library-content" class="scroll-area">
+        <section class="stats" id="library-stats"></section>
+        <p id="library-scan" class="hint scan-line"></p>
+
+        <section id="unmatched-card" class="card" hidden>
+          <h2><span data-i18n="library.unmatchedTitle"></span> <span id="unmatched-count" class="count"></span></h2>
+          <p id="no-tmdb-key" class="hint top" hidden>
+            <span data-i18n="library.noTmdbKey"></span>
+            <button id="add-tmdb-key" type="button" class="link" data-i18n="library.addTmdbKey"></button>
+          </p>
+          <p class="hint top" data-i18n="library.unmatchedHint"></p>
+          <ul id="unmatched-list" class="item-list"></ul>
+        </section>
+
+        <section id="incompatible-card" class="card" hidden>
+          <h2><span data-i18n="library.incompatibleTitle"></span> <span id="incompatible-count" class="count"></span></h2>
+          <p class="hint top" data-i18n="library.incompatibleHint"></p>
+          <ul id="incompatible-list" class="item-list"></ul>
+        </section>
+        <p id="probe-note" class="hint" hidden></p>
+
+        <section id="missing-card" class="card" hidden>
+          <h2><span data-i18n="library.missingTitle"></span> <span id="missing-count" class="count"></span></h2>
+          <p class="hint top" data-i18n="library.missingHint"></p>
+          <ul id="missing-list" class="item-list"></ul>
+          <button id="clean-up" type="button" data-i18n="library.cleanUp"></button>
+        </section>
+
+        <section class="card">
+          <h2 data-i18n="library.allTitle"></h2>
+          <input id="title-filter" type="text" class="filter" spellcheck="false" />
+          <ul id="title-list" class="item-list"></ul>
+          <p id="title-list-note" class="hint"></p>
+        </section>
+      </div>
+    </main>
+
+    <!-- Import -->
+    <main id="tab-import" class="tab" hidden>
+      <div id="import-empty" class="drop-zone">
+        <div class="drop-title" data-i18n="import.dropTitle"></div>
+        <p class="hint" data-i18n="import.dropHint"></p>
+        <div class="actions">
+          <button id="import-files" type="button" class="primary" data-i18n="import.pickFiles"></button>
+          <button id="import-folder" type="button" data-i18n="import.pickFolder"></button>
+        </div>
+        <p id="import-empty-message" class="result"></p>
+      </div>
+
+      <div id="import-view" class="tab" hidden>
+        <p id="import-message" class="hint top-message"></p>
+        <ul id="import-list" class="scroll-area import-list"></ul>
+        <div id="import-progress" class="progress" hidden>
+          <div class="progress-track"><span id="import-progress-fill" class="progress-fill"></span></div>
+          <span id="import-progress-text" class="hint"></span>
+        </div>
+        <div class="save-bar">
+          <div id="import-mode" class="mode">
+            <label><input type="radio" name="import-mode" value="copy" checked /> <span data-i18n="import.copy"></span></label>
+            <label><input type="radio" name="import-mode" value="move" /> <span data-i18n="import.move"></span></label>
+          </div>
+          <span id="import-summary" class="save-message"></span>
+          <button id="import-add-more" type="button" data-i18n="import.pickFiles"></button>
+          <button id="import-clear" type="button" data-i18n="import.clear"></button>
+          <button id="import-cancel" type="button" data-i18n="import.cancel" hidden></button>
+          <button id="import-start" type="button" class="primary" data-i18n="import.start"></button>
+        </div>
+      </div>
+    </main>
+
+    <div id="drop-overlay" class="drop-overlay" hidden><span data-i18n="import.dropTitle"></span></div>
+
+    <!-- Settings -->
+    <main id="tab-settings" class="tab" hidden>
+      <div class="settings-scroll">
+        <section class="card">
+          <h2 data-i18n="settings.foldersTitle"></h2>
+          <p class="hint top" data-i18n="settings.foldersHint"></p>
+          <div id="folder-groups"></div>
+        </section>
+
+        <section class="card">
+          <h2 data-i18n="settings.tmdbTitle"></h2>
+          <label class="field">
+            <span data-i18n="settings.tmdbKey"></span>
+            <span class="field-row">
+              <input id="tmdb-key" type="password" spellcheck="false" autocomplete="off" />
+              <button id="tmdb-show" type="button" data-i18n="settings.show"></button>
+              <button id="tmdb-test" type="button" data-i18n="settings.test"></button>
+            </span>
+          </label>
+          <p id="tmdb-result" class="result"></p>
+          <p class="hint">
+            <span data-i18n="settings.tmdbHint"></span>
+            <button id="tmdb-link" type="button" class="link" data-i18n="settings.getKey"></button>
+          </p>
+        </section>
+
+        <section class="card">
+          <h2 data-i18n="settings.serverTitle"></h2>
+          <label class="field narrow">
+            <span data-i18n="settings.port"></span>
+            <input id="port" type="number" min="1" max="65535" />
+          </label>
+          <p class="hint" data-i18n="settings.portHint"></p>
+          <label class="checkbox">
+            <input id="watch-folders" type="checkbox" />
+            <span data-i18n="settings.watchFolders"></span>
+          </label>
+        </section>
+
+        <section class="card">
+          <h2 data-i18n="settings.ffmpegTitle"></h2>
+          <label class="field">
+            <span data-i18n="settings.ffprobePath"></span>
+            <span class="field-row">
+              <input id="ffprobe-path" type="text" spellcheck="false" />
+              <button id="ffprobe-browse" type="button" data-i18n="settings.browse"></button>
+              <button id="ffprobe-find" type="button" data-i18n="settings.find"></button>
+            </span>
+          </label>
+          <p id="ffprobe-result" class="result"></p>
+          <label class="checkbox">
+            <input id="storyboards-all" type="checkbox" />
+            <span data-i18n="settings.storyboardsForAll"></span>
+          </label>
+        </section>
+
+        <section class="card">
+          <h2 data-i18n="settings.openSubtitlesTitle"></h2>
+          <div class="field-grid">
+            <label class="field">
+              <span data-i18n="settings.osApiKey"></span>
+              <input id="os-api-key" type="text" spellcheck="false" autocomplete="off" />
+            </label>
+            <label class="field">
+              <span data-i18n="settings.osUsername"></span>
+              <input id="os-username" type="text" spellcheck="false" autocomplete="off" />
+            </label>
+            <label class="field">
+              <span data-i18n="settings.osPassword"></span>
+              <input id="os-password" type="password" autocomplete="off" />
+            </label>
+          </div>
+          <p class="hint">
+            <span data-i18n="settings.osHint"></span>
+            <button id="os-link" type="button" class="link" data-i18n="settings.getKey"></button>
+          </p>
+        </section>
+      </div>
+
+      <div class="save-bar">
+        <span id="save-message" class="save-message"></span>
+        <button id="settings-cancel" type="button" data-i18n="settings.cancel"></button>
+        <button id="settings-save" type="button" class="primary" data-i18n="settings.save"></button>
+      </div>
+    </main>
+
+    <!-- TMDB match dialog (library.js) -->
+    <div id="match-dialog" class="modal-backdrop" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="match-heading">
+        <h2 id="match-heading" data-i18n="match.title"></h2>
+        <p id="match-for" class="match-for"></p>
+        <form id="match-form" class="field-row">
+          <input id="match-query" type="text" spellcheck="false" />
+          <input id="match-year" type="number" class="year-input" min="1880" max="2100" />
+          <button type="submit" class="primary" data-i18n="match.search"></button>
+        </form>
+        <p id="match-message" class="result"></p>
+        <ul id="match-results" class="item-list match-results"></ul>
+        <div class="modal-footer">
+          <button id="match-close" type="button" data-i18n="match.close"></button>
+        </div>
+      </div>
+    </div>
+
+    <script src="settings.js"></script>
+    <script src="matchDialog.js"></script>
+    <script src="library.js"></script>
+    <script src="import.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

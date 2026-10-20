@@ -1,0 +1,38 @@
+# Windows installer: `npm run desktop:dist` (from the project folder) -> desktop/dist/Stefflix Setup <version>.exe
+appId: com.stefan.homestream.desktop # the same as APP_USER_MODEL_ID in src/shortcut.js
+productName: Stefflix
+copyright: Stefan Kalenderov
+
+directories:
+  output: dist
+  buildResources: build
+
+files:
+  - src/**/*
+  - assets/**/*
+  - package.json
+
+# The server, bundled by scripts/build-server.mjs (runs first in `npm run dist`).
+extraResources:
+  - from: bundle/server
+    to: server
+
+# better-sqlite3 ships Node-API prebuilds that work in Electron as they are.
+npmRebuild: false
+
+win:
+  target: nsis
+  icon: assets/icon.png
+
+nsis:
+  oneClick: false
+  # Installed for all users (Program Files): needed to add the firewall rule (build/installer.nsh).
+  perMachine: true
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: Stefflix
+  runAfterFinish: true
+  # The library, settings and progress in %APPDATA%\Stefflix stay when the app is uninstalled.
+  deleteAppDataOnUninstall: false
+  include: build/installer.nsh

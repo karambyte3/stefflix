@@ -1,0 +1,22 @@
+{
+  "name": "home-stream-tv",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && node scripts/check-build.js",
+    "preview": "vite preview",
+    "icons": "node scripts/generate-icons.js",
+    "package": "npm run build && ares-package dist -o build",
+    "install-tv": "npm run package && node scripts/install-tv.js",
+    "launch": "ares-launch --device tv com.stefan.homestream",
+    "inspect": "ares-inspect --device tv --app com.stefan.homestream --open",
+    "extend-dev": "node scripts/extend-dev.js"
+  },
+  "devDependencies": {
+    "@webos-tools/cli": "^3.2.6",
+    "acorn": "^8.19.0",
+    "vite": "^8.3.4"
+  }
+}

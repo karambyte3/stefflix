@@ -1,0 +1,26 @@
+{
+  "name": "home-stream-desktop",
+  "productName": "Stefflix",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Stefflix – медиен сървър за телевизора",
+  "author": "Stefan Kalenderov",
+  "type": "module",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "shortcut": "electron . --create-shortcut",
+    "test": "node --test",
+    "build:server": "node scripts/build-server.mjs",
+    "dist": "node scripts/build-server.mjs && electron-builder --win nsis"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.8"
+  },
+  "devDependencies": {
+    "better-sqlite3": "^13.0.3",
+    "electron": "44.9.0",
+    "electron-builder": "^26.15.3",
+    "esbuild": "^0.28.2"
+  }
+}

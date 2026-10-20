@@ -1,0 +1,670 @@
+/* Video player (screens/player.js). */
+
+
+.player {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000;
+}
+
+.player-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+
+.player-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+  pointer-events: none;
+}
+
+.player-overlay.is-visible {
+  opacity: 1;
+}
+
+.player-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: var(--safe-y) var(--safe-x) 80px;
+  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+}
+
+.player-title {
+  margin: 0;
+  font-size: 52px;
+  font-weight: 700;
+}
+
+.player-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 100px var(--safe-x) var(--safe-y);
+  background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.85));
+}
+
+/* --- progress bar ---------------------------------------------------------------------- */
+
+/* The focusable area is taller than the visible track, so it's easy to hit with the pointer. */
+.player-progress {
+  position: relative;
+  height: 30px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.player-progress-track {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+  transition: transform 150ms ease-out;
+}
+
+.player-progress-buffer,
+.player-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+  transform-origin: 0 0;
+}
+
+.player-progress-buffer {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.player-progress-fill {
+  background: var(--accent);
+}
+
+/* Where the end credits start (the next-episode card appears there). */
+.player-progress-credits {
+  position: absolute;
+  top: 0;
+  display: none;
+  width: 6px;
+  height: 100%;
+  margin-left: -3px;
+  background: #ffd54a;
+}
+
+.player-progress-knob {
+  position: absolute;
+  top: 3px;
+  left: -12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 150ms;
+}
+
+.player.bar-open .player-progress.is-focused .player-progress-track,
+.player.scrubbing .player-progress-track {
+  transform: scaleY(1.6);
+}
+
+.player.bar-open .player-progress.is-focused .player-progress-knob,
+.player.scrubbing .player-progress-knob {
+  opacity: 1;
+}
+
+/* --- seek preview ---------------------------------------------------------------------- */
+
+/* A zero-height row above the progress bar; the bubble hangs upwards from it. */
+.player-seek {
+  position: relative;
+  height: 0;
+}
+
+.seek-preview {
+  position: absolute;
+  bottom: 24px;
+  left: 0;
+  opacity: 0;
+  transition: opacity 150ms;
+}
+
+.seek-preview.is-visible {
+  opacity: 1;
+}
+
+.seek-thumb {
+  position: relative;
+  width: 400px;
+  height: 225px;
+  overflow: hidden;
+  border: 4px solid var(--focus);
+  border-radius: 8px;
+  background: #000;
+}
+
+.seek-preview.no-thumb .seek-thumb {
+  display: none;
+}
+
+.seek-sheet,
+.seek-frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.seek-sheet {
+  display: none;
+  background-repeat: no-repeat;
+}
+
+.seek-preview.has-storyboard .seek-sheet {
+  display: block;
+}
+
+.seek-preview.has-storyboard .seek-frame {
+  display: none;
+}
+
+.seek-frame {
+  opacity: 0;
+  transition: opacity 150ms;
+}
+
+.seek-frame.is-loaded {
+  opacity: 1;
+}
+
+.seek-frame.is-loaded.is-stale {
+  opacity: 0.4;
+}
+
+.seek-label {
+  margin-top: 10px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.seek-time {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.seek-delta {
+  margin-left: 16px;
+  color: var(--text-muted);
+  font-size: 30px;
+  font-weight: 600;
+}
+
+/* While a seek target is chosen, the subtitles of the old position would only be confusing. */
+.player.scrubbing .subtitles {
+  opacity: 0;
+}
+
+/* --- control bar ------------------------------------------------------------------------ */
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.player-time {
+  margin-left: 28px;
+  font-size: 34px;
+  font-weight: 600;
+}
+
+.player-ends {
+  margin-left: 28px;
+  color: var(--text-muted);
+  font-size: 28px;
+}
+
+.player-controls-spacer {
+  flex: 1;
+}
+
+.player-btn {
+  display: flex;
+  align-items: center;
+  height: 80px;
+  min-width: 80px;
+  margin-left: 20px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 40px;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+  font: inherit;
+  font-size: 30px;
+  font-weight: 600;
+  outline: none;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 150ms ease-out;
+}
+
+.player-btn-play {
+  justify-content: center;
+  margin-left: 0;
+  padding: 0;
+}
+
+.player-btn .icon {
+  display: block;
+  width: 48px;
+  height: 48px;
+}
+
+.player-btn-label {
+  margin: 0 8px 0 12px;
+}
+
+/* Subtitles on: a red line under the CC icon, like on YouTube. */
+.player-btn-subs .icon {
+  border-bottom: 4px solid transparent;
+}
+
+.player-btn-subs.is-on .icon {
+  border-bottom-color: var(--accent);
+}
+
+/* The focus ring shows only while the buttons have focus (not when the overlay just peeks). */
+.player.bar-open .player-btn.is-focused {
+  background: var(--text);
+  color: #000;
+  transform: scale(1.1);
+}
+
+/* The overlay is see-through for the pointer, except for the controls while they are visible. */
+.player-overlay:not(.is-visible) .player-btn,
+.player-overlay:not(.is-visible) .player-progress {
+  pointer-events: none;
+}
+
+.player-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -48px 0 0 -48px;
+  opacity: 0;
+  transition: opacity 200ms;
+  pointer-events: none;
+}
+
+.player-spinner.is-visible {
+  opacity: 1;
+}
+
+.spinner {
+  width: 96px;
+  height: 96px;
+  border: 8px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 900ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.player-error {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--safe-x);
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.player-error.is-visible {
+  display: flex;
+}
+
+.player-error-title {
+  margin: 0;
+  font-size: 56px;
+}
+
+.player-error-text {
+  margin: 24px 0 0;
+  max-width: 1400px;
+  color: var(--text-muted);
+  font-size: 38px;
+}
+
+.player-warning {
+  position: absolute;
+  top: 170px;
+  left: var(--safe-x);
+  max-width: 1200px;
+  padding: 16px 28px;
+  border-left: 6px solid var(--warning);
+  background: rgba(0, 0, 0, 0.8);
+  font-size: 28px;
+  opacity: 0;
+  transition: opacity 300ms;
+  pointer-events: none;
+}
+
+.player-warning.is-visible {
+  opacity: 1;
+}
+
+/* --- subtitles (components/subtitles.js) ------------------------------------------- */
+
+/* Size, colour, background and position come from the user's settings (inline styles). */
+.subtitles {
+  position: absolute;
+  left: var(--safe-x);
+  right: var(--safe-x);
+  bottom: 8%;
+  color: #fff;
+  font-size: 48px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  pointer-events: none;
+  transition: transform 300ms ease-out;
+}
+
+/* Out of the way of the controls while they are on screen. */
+.player.controls-visible .subtitles {
+  transform: translateY(-200px);
+}
+
+.subtitle-line + .subtitle-line {
+  margin-top: 8px;
+}
+
+.subtitle-text {
+  padding: 2px 14px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* "none": a hard-edged outline (no blur) keeps text readable on bright frames cheaply. */
+.subtitles[data-background='none'] .subtitle-text {
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 3px 0 #000;
+}
+
+.subtitles[data-background='semi'] .subtitle-text {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.subtitles[data-background='solid'] .subtitle-text {
+  background: #000;
+}
+
+
+/* Short messages such as "Субтитри: +0.75 s". */
+.player-indicator {
+  position: absolute;
+  top: 60px;
+  right: var(--safe-x);
+  padding: 16px 28px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  font-size: 34px;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 200ms;
+  pointer-events: none;
+}
+
+.player-indicator.is-visible {
+  opacity: 1;
+}
+
+/* --- next episode card ------------------------------------------------------------------ */
+
+.next-card {
+  position: absolute;
+  right: var(--safe-x);
+  bottom: 200px;
+  display: flex;
+  width: 820px;
+  padding: 20px;
+  border-radius: 12px;
+  background: rgba(20, 20, 20, 0.92);
+  box-shadow: 0 0 0 3px var(--focus);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 300ms, transform 300ms;
+  pointer-events: none;
+}
+
+.next-card.is-visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.next-card-art {
+  flex-shrink: 0;
+  width: 320px;
+  height: 180px;
+}
+
+.next-card-body {
+  margin-left: 28px;
+  min-width: 0;
+}
+
+.next-card-label {
+  margin: 0;
+  color: var(--accent);
+  font-size: 24px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.next-card-title {
+  margin: 6px 0 0;
+  overflow: hidden;
+  font-size: 32px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.next-card-countdown {
+  margin: 10px 0 0;
+  font-size: 26px;
+}
+
+.next-card-bar {
+  height: 6px;
+  margin-top: 10px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.next-card-bar-fill {
+  height: 100%;
+  background: var(--text);
+  transform-origin: 0 0;
+  transition: transform 1000ms linear;
+}
+
+.next-card-hint {
+  margin: 10px 0 0;
+  color: var(--text-muted);
+  font-size: 22px;
+}
+
+/* --- subtitle panel (screens/player/subtitlePanel.js) ------------------------------------ */
+
+/* The video stays visible next to the panel, so subtitle changes can be checked live. */
+.subtitle-panel-backdrop {
+  background: none;
+}
+
+.subtitle-menu {
+  width: 600px;
+  background: rgba(24, 24, 24, 0.96);
+}
+
+.player.panel-open .subtitles {
+  right: 640px;
+}
+
+.subtitle-menu-heading {
+  margin: 28px 0 12px;
+  color: var(--text-muted);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.subtitle-sync {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.subtitle-sync-btn {
+  width: 170px;
+  padding: 16px 0;
+  border: 0;
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-size: 30px;
+  font-weight: 600;
+  outline: none;
+}
+
+.subtitle-sync-btn.is-focused {
+  background: var(--text);
+  color: #000;
+}
+
+.subtitle-sync-value {
+  flex: 1;
+  font-size: 34px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.subtitle-online {
+  margin-top: 20px;
+}
+
+.subtitle-menu-hint {
+  margin: 24px 0 0;
+  color: var(--text-muted);
+  font-size: 22px;
+}
+
+/* --- pause screen ------------------------------------------------------------------------ */
+
+/* After 30 s on pause: the title and overview over the dimmed frame (only opacity animates). */
+.pause-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--safe-x);
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.7) 55%, rgba(0, 0, 0, 0.45) 100%);
+  opacity: 0;
+  transition: opacity 800ms ease-out;
+  pointer-events: none;
+}
+
+.player.pause-screen-visible .pause-screen {
+  opacity: 1;
+}
+
+.player.pause-screen-visible .subtitles {
+  opacity: 0;
+}
+
+.pause-screen-body {
+  max-width: 1050px;
+}
+
+.pause-screen-label {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 30px;
+}
+
+.pause-screen-title {
+  margin: 12px 0 0;
+  font-size: 76px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.pause-screen-meta {
+  margin: 20px 0 0;
+  font-size: 34px;
+  font-weight: 600;
+}
+
+.pause-screen-meta:empty {
+  display: none;
+}
+
+/* Long overviews are cut after six lines. */
+.pause-screen-overview {
+  display: -webkit-box;
+  margin: 28px 0 0;
+  overflow: hidden;
+  color: #ddd;
+  font-size: 32px;
+  line-height: 1.45;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+}
+
+.pause-screen-paused {
+  position: absolute;
+  right: var(--safe-x);
+  bottom: var(--safe-y);
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 30px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}

@@ -1,0 +1,70 @@
+.browse-header {
+  position: absolute;
+  top: 130px;
+  left: var(--safe-x);
+  right: var(--safe-x);
+  display: flex;
+  align-items: center;
+  height: 100px;
+}
+
+.browse-title {
+  margin: 0;
+  font-size: 56px;
+  font-weight: 800;
+}
+
+.browse-count {
+  margin-left: 12px;
+  color: var(--text-muted);
+  font-size: 36px;
+  font-weight: 400;
+}
+
+.browse-filters {
+  display: flex;
+  margin-left: auto;
+}
+
+.browse-filters .btn:last-child {
+  margin-right: 0;
+}
+
+/* Virtual grid (components/virtualGrid.js). Row heights here must match
+   POSTER_GRID / LANDSCAPE_GRID in screens/browse.js. */
+.grid-viewport {
+  position: absolute;
+  top: 240px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.grid-content {
+  position: relative;
+  transition: transform 300ms ease-out;
+}
+
+.grid-row {
+  position: absolute;
+  left: var(--safe-x);
+  right: var(--safe-x);
+  display: flex;
+}
+
+/* 7 x 222px + 6 x 28px = 1722px */
+.grid-poster .card {
+  width: 222px;
+}
+
+/* 4 x 411px + 3 x 28px = 1728px */
+.grid-landscape .card {
+  width: 411px;
+}
+
+.empty-message {
+  margin: 40px var(--safe-x);
+  color: var(--text-muted);
+  font-size: 36px;
+}

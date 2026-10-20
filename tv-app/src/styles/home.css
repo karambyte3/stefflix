@@ -1,0 +1,118 @@
+/* The content sits at the bottom, but the hero grows (instead of the content climbing
+   under the navbar) when a long title wraps. padding-top = navbar height + a gap. */
+.hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 600px;
+  padding: 190px 0 30px;
+}
+
+.hero-spacer {
+  height: 150px;
+}
+
+.hero-backdrop {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1400px;
+  height: 100%;
+  border-radius: 0;
+}
+
+.hero-backdrop-empty {
+  background: linear-gradient(135deg, #141414 20%, #3a0a0d 100%);
+}
+
+/* Fades the backdrop into the background on the left and at the bottom. */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    linear-gradient(90deg, var(--bg) 25%, rgba(20, 20, 20, 0.6) 55%, rgba(20, 20, 20, 0) 80%),
+    linear-gradient(rgba(20, 20, 20, 0) 60%, var(--bg) 100%);
+}
+
+.hero-content {
+  position: relative;
+  margin-left: var(--safe-x);
+  z-index: 2;
+  width: 1000px;
+}
+
+.hero-kicker {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+.hero-title {
+  margin: 0;
+  font-size: 76px;
+  font-weight: 800;
+  line-height: 1.1;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.hero-meta {
+  margin: 12px 0 0;
+  color: var(--text-muted);
+  font-size: 28px;
+}
+
+.hero-overview {
+  display: -webkit-box;
+  margin: 16px 0 0;
+  overflow: hidden;
+  font-size: 28px;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.hero .button-row {
+  margin-top: 28px;
+}
+
+/* --- rows --------------------------------------------------------------------- */
+
+.row {
+  position: relative;
+}
+
+.row-title {
+  margin: 0 var(--safe-x);
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.row-viewport {
+  position: relative;
+  overflow: hidden;
+  padding: 18px 0 24px;
+}
+
+.row-track {
+  position: relative;
+  display: flex;
+  padding: 0 var(--safe-x);
+  transition: transform 250ms ease-out;
+}
+
+.row .card-poster {
+  width: 200px;
+}
+
+.row .card-landscape {
+  width: 400px;
+}

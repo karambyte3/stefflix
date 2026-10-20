@@ -1,4 +1,20 @@
-# Stefflix
+<p align="center">
+  <img src="tv-app/public/logo.png" alt="Stefflix" width="420">
+</p>
+
+<p align="center">
+  <b>Домашният ти Netflix за LG телевизора</b>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-20%2B-339933?logo=nodedotjs&logoColor=white" alt="Node.js 20+">
+  <img src="https://img.shields.io/badge/LG-webOS%20TV-A50034?logo=lg&logoColor=white" alt="LG webOS TV">
+  <img src="https://img.shields.io/badge/Express-000000?logo=express&logoColor=white" alt="Express">
+  <img src="https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white" alt="SQLite">
+  <img src="https://img.shields.io/badge/TMDB-01B4E4?logo=themoviedatabase&logoColor=white" alt="TMDB">
+</p>
+
+---
 
 Домашна стрийминг система: Node.js медия сървър на компютъра + webOS приложение за LG телевизора. Работи само в домашната мрежа — без облак и акаунти.
 

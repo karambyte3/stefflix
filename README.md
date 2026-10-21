@@ -14,6 +14,10 @@
   <img src="https://img.shields.io/badge/TMDB-01B4E4?logo=themoviedatabase&logoColor=white" alt="TMDB">
 </p>
 
+<p align="center">
+  <img src="docs/stefflix-poster.webp" alt="Stefflix — твоето кино у дома" width="720">
+</p>
+
 ---
 
 Домашна стрийминг система: Node.js медия сървър на компютъра + webOS приложение за LG телевизора. Работи само в домашната мрежа — без облак и акаунти.
